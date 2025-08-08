@@ -1,4 +1,4 @@
-# 🩺 Diabetes Prediction Model – Your First MLOps Project (FastAPI + Docker + K8s)
+# 🩺 Medicare Prediction Model – Your First MLOps Project (FastAPI + Docker + K8s)
 
 > 🎥 YouTube video for the project: **"Build Your First MLOps Project"**
 
@@ -15,13 +15,13 @@ This project helps you learn **Building and Deploying an ML Model** using a simp
 ## 📊 Problem Statement
 
 Predict if a person is diabetic based on:
-- Pregnancies
-- Glucose
-- Blood Pressure
-- BMI
-- Age
+  - Average_Covered_Charges
+  - Average_Total_Payments
+  - Reimbursement_Rate
+  - Total_Discharges
+  - Total_Payment
 
-We use a Random Forest Classifier trained on the **Pima Indians Diabetes Dataset**.
+We use a Random Forest Classifier trained on the **Pima Indians Medicare Dataset**.
 
 ---
 
@@ -30,8 +30,8 @@ We use a Random Forest Classifier trained on the **Pima Indians Diabetes Dataset
 ### 1. Clone the Repo
 
 ```bash
-git clone https://github.com/iam-veeramalla/first-mlops-project.git
-cd first-mlops-project
+git clone https://github.com/kasimbasaragi/medicare-mlops.git
+cd medicare-mlops
 ```
 
 ### 2. Create Virtual Environment
@@ -62,38 +62,66 @@ uvicorn main:app --reload
 ### Sample Input for /predict
 
 ```
-{
-  "Pregnancies": 2,
-  "Glucose": 130,
-  "BloodPressure": 70,
-  "BMI": 28.5,
-  "Age": 45
-}
+  "Average_Covered_Charges": 0,
+  "Average_Total_Payments": 0,
+  "Reimbursement_Rate": 0,
+  "Total_Discharges": 5,
+  "Total_Payment": 0
 ```
 
 ## Dockerize the API
 
-### Build the Docker Image
+## 1. Build the Docker Image
 
 ```
-docker build -t diabetes-prediction-model .
-```
-
-### Run the Container
+docker build -t kasimbasaragi/medicare:v1 .
 
 ```
-docker run -p 8000:8000 diabetes-prediction-model
-```
 
-## Deploy to Kubernetes
+## 2. Push Image to Docker Hub
 
-```
-kubectl apply -f diabetes-prediction-model-deployment.yaml
-```
+docker login
+docker push kasimbasaragi/medicare:v1
 
-🙌 Credits
 
-Created by `ABHISHEK VEERAMALLA`
 
-Subscribe for more DevOps + MLOps content on the YouTube Channel - `Abhishek.Veeramalla`
+## ☸️ Deploy to Kubernetes
+
+## Apply the Deployment YAML
+
+kubectl apply -f k8s-deployment.yaml
+
+
+
+## Check pod status:
+
+kubectl get pods
+kubectl logs <pod-name>
+
+
+## 📁 File Structure
+
+medicare-mlops/
+│
+├── train.py               # Training script to generate the model
+├── main.py                # FastAPI app for prediction
+├── requirements.txt       # Python dependencies
+├── Dockerfile             # Docker instructions
+├── .dockerignore          # Docker ignore rules
+├── medicare_model.pkl     # Trained ML model (auto-generated after train.py)
+└── medicare-deployment.yaml  # Kubernetes deployment file
+
+
+## 🙌 Author
+Project by Kashim Basaragi
+Docker Hub: kasimbasaragi
+
+
+## 📌 Notes
+Make sure medicare_model.pkl is not ignored in .dockerignore.
+
+Always run train.py before building the Docker image to include the model.
+
+Confirm Docker image is pushed with the correct tag (e.g. v1) before Kubernetes deployment.
+
 
