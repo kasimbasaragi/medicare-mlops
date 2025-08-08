@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medicare-api
+  labels:
+    app: medicare-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: medicare-api
+  template:
+    metadata:
+      labels:
+        app: medicare-api
+    spec:
+      containers:
+      - name: medicare-api
+        image: kasimbasaragi/medicare:v1
+        ports:
+        - containerPort: 8000
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: medicare-api-service
+spec:
+  selector:
+    app: medicare-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
+
